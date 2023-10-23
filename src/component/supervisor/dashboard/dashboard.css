@@ -1,0 +1,268 @@
+.Container{
+    font-family:Verdana, Geneva, Tahoma, sans-serif;
+   
+   
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+  
+}
+
+.Header{
+   
+    padding:8px;
+    box-shadow: 0px 4px 6px -2px rgba(0, 0, 0, 0.3);
+    display: flex;
+  align-items: center;
+  background-color: white;
+
+ 
+}
+
+.newplan {
+  cursor: pointer;
+}
+
+.newplan:hover  .nav {
+  display: block;
+}
+
+.navbar{
+  cursor:pointer;
+}
+
+.pages {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    color:#1c336c;
+ 
+  }
+
+.home{
+    cursor:pointer;
+}
+
+
+.headerText{
+    cursor:pointer;
+}
+
+.headerText::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background-color: hsl(180.3deg 100% 39.02%);
+    transition: width 0.2s ease-in-out;
+  }
+  
+  .headerText:hover::after {
+    width: calc(100% - 30%);
+  }
+
+
+.logout{
+    margin-left: auto;
+    color:#1c336c;
+    border:2px solid;
+    padding:8px;
+    cursor:pointer;
+}
+
+.searchTab{
+    width:50%;
+} 
+
+.search{
+    width:70%;
+    
+    height:10px;
+    padding:8px;
+}
+
+
+
+  table {
+    border-collapse: collapse;
+    background-color: white;
+    font-family: sans-serif;
+    border:'none';
+    width: 100%;
+    border-radius: 5px;
+  }
+  
+  
+  tbody{
+    cursor: pointer;
+
+  }
+  
+  th{
+    background-color: #2e4d62;
+    color: #ffffff;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  }
+  
+  th,
+  td {
+    text-align: left;
+    padding: 8px;
+    border: none;
+    
+  }
+  
+  
+  tbody tr:hover {
+    background-color: hsl(180, 7%, 78%);
+  }
+  .progress {
+    width: 100%;
+    height: 15px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    position: relative;
+  }
+  
+  .progress-bar {
+    height: 100%;
+    border-radius: 10px;
+    background-color: #DA1970;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .progress-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .progress-text {
+    color: white;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  button{
+    background-color:hsl(180.3deg 100% 39.02%);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding:6px;
+    border-radius: 5px;
+    cursor: pointer;
+
+  }
+
+  
+
+  .modal-content input{
+    width:10%;
+  }
+
+  /* Add this CSS to your dashboard.css or a separate CSS file */
+.custom-modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background overlay */
+  z-index: 9999; /* Ensure the modal appears on top of other content */
+}
+
+.modal-content {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  max-width: 400px; 
+  
+  position:relative;/* Set a maximum width for the modal */
+}
+
+
+.modal-content h2{
+  color:#007bff
+
+}
+
+
+.modal-content input {
+  border-radius: 5px;
+    margin-top: 10px;
+    padding: 8px;
+    width :100%;
+    font-size: 16px;
+    box-shadow: inset 2px 5px 10px rgba(228, 228, 228, 0.3);
+    transition: 300ms ease-in-out;
+}
+
+.modal-content button {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 3%;
+}
+
+.delete:hover{
+  color:red !important;
+}
+
+.edit:hover{
+  color:blue !important;
+}
+
+#deletebtn:hover{
+  background-color:red !important;
+  color:black;
+}
+
+.forminput{
+  width:100%;
+}
+
+.newpad button {
+  width: 12%;
+  height: 3em;
+  border-radius: 10px;
+  font-size: 15px;
+  font-family: inherit;
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  cursor: pointer;
+  background-image: linear-gradient(to right, #0fd881 0%, #477ff9 100%);
+  font-weight: bold;
+  margin-left: 8%;
+  
+  
+ }
+ 
+
+
+
+
+
+  
+  
+  
+  
+  
+  
