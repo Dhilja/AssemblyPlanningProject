@@ -8,7 +8,7 @@ import Slicing from './component/supervisor/slicing/slicing';
 import Book from './component/supervisor/book/bookPage';
 import ViewerDashboard from './component/viewer/dashboard/viewerDashboard';
 import Viewerarea from './component/viewer/area/viewerArea';
-import Area from './component/supervisor/Area/Area'
+import Area from './component/supervisor/Area/viewerArea'
 
 function App() {
   return (
