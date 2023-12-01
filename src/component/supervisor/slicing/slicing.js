@@ -84,6 +84,10 @@ function Slicing() {
     navigate('/')
   }
 
+  const navigateToUsers =() => {
+    navigate('/Users')
+  }
+
   const handleOaNumberChange = (e) => {
     setOaNumber(e.target.value);
     setDrawingNumber(''); // Clear the selected drawing number
@@ -204,7 +208,7 @@ const handleMouseLeave = () => {
             <p className='headerText'>Track Progress</p>
           </div>
           <div className="pages">
-            <p className='headerText'>Users</p>
+            <p className='headerText' onClick={navigateToUsers}>Users</p>
           </div>
           <div className="pages">
             <p className='headerText'>Customers</p>

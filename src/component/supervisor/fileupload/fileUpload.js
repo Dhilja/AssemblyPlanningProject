@@ -105,6 +105,10 @@ function Fileupload() {
   const handleMouseLeave = () => {
     setShowNav(false);
   };
+
+  const navigateToUsers = () => {
+    navigate('/Users')
+  }
   
   
   
@@ -133,7 +137,7 @@ function Fileupload() {
             <p className='headerText'>Track Progress</p>
           </div>
           <div className="pages">
-            <p className='headerText'>Users</p>
+            <p className='headerText' onClick={navigateToUsers}>Users</p>
           </div>
           <div className="pages">
             <p className='headerText'>Customers</p>

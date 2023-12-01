@@ -440,20 +440,33 @@ useEffect(() => {
 }, [selectedSliceid]);
 
 useEffect(() => {
-  if (startDate && endDate) {
-    fetch(`http://localhost:5000/api/position?start_date=${startDate}&end_date=${endDate}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log('tile Position Data:', data);
-        setTilepos(data);
-      })
-      .catch(error => {
-        console.error('Error fetching tile position data:', error);
-      });
+  console.log("Fetching tile position data...");
+
+  // Check if startDate and endDate are valid dates
+  if (!startDate || !endDate) {
+    console.error('Invalid date values');
+    return;
   }
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/position?start_date=${startDate}&end_date=${endDate}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Tile Position Data:', data);
+      setTilepos(data);
+    } catch (error) {
+      console.error('Error fetching tile position data:', error.message);
+      // Handle errors more gracefully, e.g., set an error state or display an error message to the user.
+    }
+  };
+
+  fetchData();
 }, [startDate, endDate]);
-
-
 
 
 
@@ -467,7 +480,9 @@ const handleMouseLeave = () => {
   setShowNav(false);
 };
 
-
+const navigateToUsers =() => {
+  navigate('/Users')
+}
   
   
     return(
@@ -487,14 +502,14 @@ const handleMouseLeave = () => {
             <div className="Navbar"onClick ={navigateToFileupload}>File Upload</div>
             <div className="Navbar"onClick={navigateToSlicing}>Slice</div>
             <div className="Navbar"onClick={navigateToBook}>Book</div>
-            <div className="Navbar"onClick={navigateToArea}>Area</div>
+            <div className="Navbar"onClick={navigateToArea}>View</div>
           </div>
           </div>
           <div className="pages">
             <p className='headerText'>Track Progress</p>
           </div>
           <div className="pages">
-            <p className='headerText'>Users</p>
+            <p className='headerText' onClick={navigateToUsers}>Users</p>
           </div>
           <div className="pages">
             <p className='headerText'>Customers</p>

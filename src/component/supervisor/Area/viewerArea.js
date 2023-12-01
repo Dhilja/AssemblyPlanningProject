@@ -28,9 +28,7 @@ const handleAreaClose = () => {
 
   
 
-  const navigateToviewerDashboard=() =>{
-    navigate('/Viewerdashboard')
-  }
+  
 
   const navigateToLogin =() => {
     navigate('/')
@@ -97,18 +95,74 @@ const handleAreaClick = (areaNumber) => {
 /*for displaying products*/
 
 useEffect(() => {
-    
-    console.log("Fetching tile position data...");
-    fetch(`http://localhost:5000/api/position?start_date=${startDate}&end_date=${endDate}`)
-      .then(response => response.json())
-      .then(data => {
-        console.log('tile Position Data:', data);
-        setTilepos(data);
-      })
-      .catch(error => {
-        console.error('Error fetching tile position data:', error);
-      });
-  }, [startDate, endDate]);
+  console.log("Fetching tile position data...");
+
+  // Check if startDate and endDate are valid dates
+  if (!startDate || !endDate) {
+    console.error('Invalid date values');
+    return;
+  }
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/position?start_date=${startDate}&end_date=${endDate}`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('Tile Position Data:', data);
+      setTilepos(data);
+    } catch (error) {
+      console.error('Error fetching tile position data:', error.message);
+      // Handle errors more gracefully, e.g., set an error state or display an error message to the user.
+    }
+  };
+
+  fetchData();
+}, [startDate, endDate]);
+
+const [showNav, setShowNav] = useState(false);
+  
+const handleMouseEnter = () => {
+  setShowNav(true);
+};
+
+const handleMouseLeave = () => {
+  setShowNav(false);
+};
+
+
+
+  const navigateToFileupload = () => {
+    //  navigate 
+    navigate('/fileUpload');
+  };
+
+  const navigateToPlanning = () => {
+    navigate('/Planning');
+  }
+
+  const navigateToSlicing =() => {
+    navigate('/slicing');
+  }
+
+  const navigateToBook = () => {
+    navigate('/bookPage')
+  }
+  const navigateToArea=() =>{
+    navigate('/Area')
+  }
+
+  const navigateToDashboard=() =>{
+    navigate('/dashboard')
+  }
+
+  const navigateToUsers =() =>{
+    navigate('/Users')
+  }
+
   
 
     return(
@@ -118,25 +172,33 @@ useEffect(() => {
             <img src={logo} alt="logo" style={{ width: '200px', height: '50px' }} />
           </div>
           <div className="pages">
-            <p className='headerText' onClick={navigateToviewerDashboard} >Home</p>
+            <p className='headerText' onClick={navigateToDashboard} >Home</p>
           </div>
           <div className="pages">
-            <p className='home' style={{ color: 'hsl(180.3deg 100% 39.02%)' }}>View</p>
+            <p className='home' onMouseEnter={handleMouseEnter}  style={{ color: 'hsl(180.3deg 100% 39.02%)' }}>New Plan </p>
+            <div className ="Nav"onMouseLeave={handleMouseLeave}  style={{ display: showNav ? 'block' : 'none' }}>
+            <div  className="Navbar"onClick={navigateToPlanning}>Plan</div>
+            <div className="Navbar"onClick ={navigateToFileupload}>File Upload</div>
+            <div className="Navbar"onClick={navigateToSlicing}>Slice</div>
+            <div className="Navbar"onClick={navigateToBook}>Book</div>
+            <div className="Navbar"onClick={navigateToArea}>View</div>
           </div>
-         
+          </div>
           <div className="pages">
             <p className='headerText'>Track Progress</p>
           </div>
+          <div className="pages">
+            <p className='headerText' onClick={navigateToUsers}>Users</p>
+          </div>
+          <div className="pages">
+            <p className='headerText'>Customers</p>
+          </div>
          
-         
-          <div className="logout" style={{ marginLeft: '15%' }} onClick ={navigateToLogin}>
+          <div className="logout" style={{ marginLeft: '15%' }} onClick={navigateToLogin}>
             Logout
           </div>
-          </div>
-         
-
-{/*for the inputs of dates */}
-
+        </div>
+      
         <div style={{display:'flex',marginTop:'2%'}}>
             <div style={{marginLeft:'10%'}}>
             <label style={{color:'white'}}>Start Date </label>
@@ -147,8 +209,7 @@ useEffect(() => {
               <input type="date" placeholder="End Date"value={endDate} onChange= {e=>setEnddate(e.target.value)}  />
             </div>
              
-        </div>
-          
+        </div> 
          
         {/*for displaying plant ,area , apositions of tile */}    
 
@@ -240,7 +301,7 @@ useEffect(() => {
                 }}
               >
 
-                <p>{item.customer_name}<br/>{item.slice_name}<br/>{item.occ_length}*{item.occ_breadth}*{item.height}</p>
+                <p style={{fontSize:'70%'}}>{item.customer_name}<br/>{item.slice_name}<br/>{item.occ_length}*{item.occ_breadth}*{item.height}<br/>Inspection Date : {item.inspection_date}<br/> Start Date :{item.start_date}<br/> End Date :{item.end_date}</p>
                
                 </div>}
                

@@ -29,10 +29,19 @@ function Planning() {
       setIsAlertOpen(true);
        // Show the success alert
     })
-    .catch((error) => {
-      console.error(error);
-      alert(error); // Handle any error that occurred during the request
+    .catch(error => {
+      console.error('Axios error:', error);
+    
+      // Log the entire error object and its properties
+      console.log('Error response data:', error.response?.data);
+    
+      // Display specific error and details
+      const errorMessage = error.response?.data?.error || 'Unknown error';
+      const errorDetails = error.response?.data?.details || 'No details available';
+    
+      alert(`${errorMessage}\nDetails: ${errorDetails}`);
     });
+    
 
     
     
@@ -97,6 +106,10 @@ const navigateToLogin=() => {
   };
   
 
+  const navigateToUsers =() => {
+    navigate('/Users')
+  }
+
   return (
     
     <div className="Container">
@@ -121,7 +134,7 @@ const navigateToLogin=() => {
           <p className='headerText'>Track Progress</p>
         </div>
         <div className="pages">
-          <p className='headerText'>Users</p>
+          <p className='headerText' onClick={navigateToUsers}>Users</p>
         </div>
         <div className="pages">
           <p className='headerText'>Customers</p>

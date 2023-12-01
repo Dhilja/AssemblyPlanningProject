@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './dashboard.css';
+
 import logo from 'F:/assembly-planning/src/Saint-Gobain_SEFPRO_logo_2023.png';
 import io from 'socket.io-client';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -120,16 +120,15 @@ function TableData() {
           console.log("editedRowData:", editedRowData);
           
           setEditedRow({
+            ...editedRow,
             area_number: editedRowData.area_number,
             plant_number: editedRowData.plant_number,
             length: editedRowData.length,
             breadth: editedRowData.breadth,
             pad_length: editedRowData.pad_length,
             pad_breadth: editedRowData.pad_breadth,
-            rows: editedRowData.rows,
-            columns: editedRowData.columns,
-            // ... other properties
-        
+            rows : editedRowData.rows,
+            columns : editedRowData.columns,
             // ... other properties
           });
           console.log("Edited row value :",editedRow);
@@ -148,37 +147,26 @@ function TableData() {
  
   
   const handleInputChange = (e) => {
-    console.log('Event:', e);
     const { name, value } = e.target;
-    console.log('Name:', name);
-    console.log('Value:', value);
-  
-    // Use the callback function to ensure the latest state is used
     setEditedRow((prevEditedRow) => ({
       ...prevEditedRow,
       [name]: value,
     }));
   };
   
-
-  
   const handleEditSubmit = (event) => {
     event.preventDefault();
     console.log('Updated row:', editedRow);
-  
-    // Ensure that area_number is set before making the request
-    if (!editedRow.area_number) {
-      console.error('area_number is not set.');
-      return;
-    }
-  
+    
+    // Implement update functionality here
     axios
       .put(`http://localhost:5000/api/data/${editedRow.area_number}`, editedRow)
       .then((response) => {
-        console.log(editedRow);
         console.log('Server response:', response.data);
         setIsEditModalOpen(false);
         setIsAlertOpen(true);
+       
+        // Reset the editedRow state
       })
       .catch((error) => {
         console.error(error);
@@ -265,31 +253,24 @@ function TableData() {
         <input type="text" placeholder="Plant Number"  id="plantNumberInput" style={{width:'80%'}}
                value={editedRow.plant_number}
                onChange={handleInputChange}/><br/>
-        <input
-  type="text"
-  id="lengthInput"
-  name="length" // Add this line
-  placeholder="Length"
-  style={{ width: '35%' }}
-  onChange={handleInputChange}
-  value={editedRow.length}
-/>
-
+        <input type="text" id="lengthInput" placeholder="Length"  style={{width:'35%'}}
+               
+               onChange={handleInputChange}/> 
         <input type="text" id="breadthInput" placeholder="Breadth" style={{width:'35%',marginLeft:'5%'}}
                
-               onChange={handleInputChange}  value={editedRow.breadth}/><br/>
+               onChange={handleInputChange}/><br/>
         <input type="text" id="padlengthInput" placeholder="pad Length"  style={{width:'35%'}}
                
-               onChange={handleInputChange}  value={editedRow.pad_length}/> 
+               onChange={handleInputChange}/> 
         <input type="text" id="padbreadthInput" placeholder="pad Breadth" style={{width:'35%',marginLeft:'5%'}}
               
-               onChange={handleInputChange}  value={editedRow.pad_breadth} /><br/>
+               onChange={handleInputChange} /><br/>
         <input type="text" id="rows" placeholder="rows"  style={{width:'35%'}}
                
-               onChange={handleInputChange}  value={editedRow.rows}/> 
+               onChange={handleInputChange}/> 
         <input type="text" id="columns" placeholder="columns" style={{width:'35%',marginLeft:'5%' }}
               
-               onChange={handleInputChange}  value={editedRow.columns}/><br/>
+               onChange={handleInputChange}/><br/>
 
         <button onClick={handleEditSubmit}>Edit</button>
         <button onClick={handleModalClose} style={{marginLeft:'50%'}}>Cancel</button>
@@ -344,7 +325,7 @@ function DashBoard() {
   }
 
   const navigateToDashboard=() =>{
-    navigate('/AdminDashboard')
+    navigate('/dashboard')
   }
 
   const navigateToArea=() =>{
@@ -352,7 +333,7 @@ function DashBoard() {
   }
 
   const navigateToUsers=()=>{
-    navigate('/AdminUsers')
+    navigate('/Users')
   }
   const handleOpenModal = () => {
     setIsModalOpen(true);

@@ -8,7 +8,10 @@ import Slicing from './component/supervisor/slicing/slicing';
 import Book from './component/supervisor/book/bookPage';
 import ViewerDashboard from './component/viewer/dashboard/viewerDashboard';
 import Viewerarea from './component/viewer/area/viewerArea';
-import Area from './component/supervisor/Area/viewerArea'
+import Area from './component/supervisor/Area/viewerArea';
+import Users from './component/supervisor/Users/Users'
+import AdminDashboard from './component/admin/dashboard/dashBoard'
+import AdminUsers from './component/admin/Users/Users'
 
 function App() {
   return (
@@ -23,6 +26,10 @@ function App() {
         <Route path="/viewerDashboard" element={<ViewerDashboard />} />
         <Route path="/viewerArea" element={<Viewerarea />} />
         <Route path="/Area" element={<Area />} />
+        <Route path="/Users" element={<Users/>}/>
+        <Route path="/AdminUsers" element = {<AdminUsers/>}/>
+        <Route path="/AdminDashboard" element = {<AdminDashboard/>}/>
+        
       </Routes>
     </Router>
   );

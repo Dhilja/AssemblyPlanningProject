@@ -142,12 +142,12 @@ app.get('/api/data/:areaNumber', (req, res) => {
 
 app.put('/api/data/:areaNumber', (req, res) => {
 
-  const { area_number, plant_number, length, breadth,pad_length,pad_breadth} = req.body;
+  const { area_number, length, breadth,pad_length,pad_breadth,rows,columns} = req.body;
 
   // Replace 'assembly_area' with the actual name of your table
-  const query = 'UPDATE assembly_area SET area_number = $1, plant_number = $2, length = $3, breadth = $4,pad_length = $5,pad_breadth = $6 WHERE area_number = $7';
-
-  pool.query(query, [area_number, plant_number, length, breadth, pad_length, pad_breadth, area_number], (error, result) => {
+  const query = 'UPDATE assembly_area SET  length = $2, breadth = $3,pad_length = $4,pad_breadth = $5,rows=$6,columns=$7 WHERE area_number = $1';
+  console.log('Received data for update:', { area_number, length, breadth, pad_length, pad_breadth, rows, columns });
+  pool.query(query, [area_number, length, breadth, pad_length, pad_breadth, rows,columns], (error, result) => {
     if (error) {
       console.error('Error updating data:', error);
       res.status(500).json({ error: 'Error updating data' });
@@ -155,11 +155,12 @@ app.put('/api/data/:areaNumber', (req, res) => {
       // Emit the 'padUpdated' event with the updated data
       const updatedData = {
         area_number: area_number,
-        plant_number: plant_number,
         total_area: length * breadth,
         available_area: length * breadth,
         occupied_area: 0.0,
       };
+
+     
       io.emit('padUpdated', updatedData);
 
       res.json({ message: 'Data updated successfully!' });
@@ -185,7 +186,18 @@ app.post('/api/product', (req, res) => {
     if (error) {
       console.error('Error inserting data:', error);
       
-      res.status(500).json({ error: 'Error inserting data' });
+      if (error.code === '23505') {
+        // Duplicate key violation (unique constraint)
+        const duplicateParam = error.detail.match(/\((.*?)\)/)[1];
+        res.status(400).json({ error: `Duplicate value for parameter: ${duplicateParam}. Ensure uniqueness of parameters.` });
+      } else if (error.code === '500') {
+        // Not null violation
+        const missingParam = error.column;
+        res.status(400).json({ error: `Missing value for parameter: ${missingParam}. All parameters are required.` });
+      } else {
+        // Generic error message for other errors
+        res.status(500).json({ error: 'Error inserting data.' });
+      }
     }
 
     else 
@@ -588,9 +600,9 @@ app.get('/api/position', (req, res) => {
   p.occ_length,
   p.occ_breadth,
   pt.customer_name,
-  pt.inspection_date,
-  p.start_date,
-  p.end_date
+  TO_CHAR(pt.inspection_date, 'YYYY-MM-DD') as inspection_date,
+  TO_CHAR(p.start_date, 'YYYY-MM-DD') as start_date,
+  TO_CHAR(p.end_date, 'YYYY-MM-DD') as end_date
 FROM
   sliceposition AS s
 JOIN
@@ -598,9 +610,9 @@ JOIN
 JOIN
   product AS pt ON s.drawing_number = pt.drawing_number
 WHERE
-  (p.start_date <=$2)
+p.start_date::date <= $2
   AND
-  (p.end_date >= $2)`
+  p.end_date::date >= $1;`
 
 
   pool.query(query,   [start_date, end_date],(error, result) => {
@@ -700,6 +712,92 @@ app.post('/authenticate', async (req, res) => {
   }
 });
 
+app.post('/login', async (req, res) => {
+  const { sgid, password } = req.body;
+
+  try {
+    const querySelect = {
+      text: 'SELECT * FROM "users" WHERE "sgid" = $1 AND "userpassword" = $2',
+      values: [sgid, password],
+    };
+    const resultSelect = await pool.query(querySelect);
+
+    if (resultSelect.rows.length === 1) {
+      const userRole = resultSelect.rows[0].usertype;
+
+      // Update LastLogin
+      const queryUpdate = {
+        text: 'UPDATE "users" SET "lastlogin" = CURRENT_TIMESTAMP WHERE "sgid" = $1',
+        values: [sgid],
+      };
+      await pool.query(queryUpdate);
+
+      // Check if userRole is defined before applying toLowerCase()
+      const lowercaseRole = userRole.toLowerCase();
+
+      if (lowercaseRole === 'viewer') {
+        res.json({ success: true, message: 'Login successful', role: 'viewer' });
+      } else if (lowercaseRole === 'supervisor') {
+        res.json({ success: true, message: 'Login successful', role: 'supervisor' });
+      } else if (lowercaseRole === 'admin') {
+        res.json({ success: true, message: 'Login successful', role: 'admin' });
+      } else {
+        res.json({ success: true, message: 'Login successful', role: 'Other' });
+      }
+    } else {
+      res.json({ success: false, message: 'Login failed' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
 
 
 
+
+// POST route to add a new user
+app.post('/api/users', async (req, res) => {
+  try {
+    const { UserID, UserName, Role, Email, Password } = req.body;
+
+    // Perform database insertion using the provided data
+    await pool.query(
+      'INSERT INTO public."users" ("sgid", "username", "usertype", "useremail", "userpassword",  "status") VALUES ($1, $2, $3, $4, $5,  $6)',
+      [UserID, UserName, Role, Email, Password, 'INACTIVE']
+    );
+
+    res.status(201).json({ message: 'User created successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error creating user' });
+  }
+});
+
+
+//Update Status
+app.put('/api/users/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    //console.log(id,status)
+
+    // Perform the status update operation using the user ID
+    await pool.query('UPDATE public."users" SET "status" = $1 WHERE "sgid" = $2', [status, id]);
+
+    res.json({ message: 'User status updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error updating user status' });
+  }
+});
+
+app.get('/userdata', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT "sgid", "username", "usertype", "status" FROM public."users" ORDER BY "sgid"');
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching data' });
+  }
+});

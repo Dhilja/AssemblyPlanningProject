@@ -139,3 +139,10 @@
     justify-content: center;
   }
   
+
+  .demo input{
+    width:98%;
+    height:3vh;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: bold;
+  }
