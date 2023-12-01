@@ -1,5 +1,3 @@
-//Assembly Area Table
-
 drop table if exists assembly_area;
 create table assembly_area (
 	area_number varchar(20) primary key,
@@ -14,29 +12,9 @@ create table assembly_area (
     total_area numeric(10,1) GENERATED ALWAYS AS ((length * breadth)) STORED,
     available_area numeric(10,1) GENERATED ALWAYS AS (((length * breadth) - occupied_area)) STORED,
 	status varchar(20) not null,
-    user_id varchar(20) references "user" (user_id),
+    
 	time timestamptz default current_timestamp
 );
-
-
-//Users Table
-
-drop table if exists "user";
-create table "user"(
-
-user_id varchar(20) primary key,
-	user_name varchar(20),
-password varchar(20),
-	email varchar(255),
-role varchar(20),
-status VARCHAR(20),
-admin_id varchar(20) references "user" (user_id),
-	lastlogin timestamptz default current_timestamp,
-	plant int
-);
-
-
-//Product Table 
 
 drop table if exists product;
 
@@ -49,13 +27,11 @@ create table product(
 	customer_name varchar(30),
 	oa_number varchar(20),
 	inspection_date DATE,
-	user_id varchar(20) references "user" (user_id),
 	time timestamptz default current_timestamp
 	
 	
 );
 
-//sliced parts table
 
 -- Drop the table if it exists
 DROP TABLE IF EXISTS slicedparts;
@@ -82,7 +58,6 @@ CREATE TABLE slicedparts (
     occupied_area DECIMAL(10, 1) GENERATED ALWAYS AS (
         (length +additional_length+ walkaround_distance) * (breadth + additional_breadth+walkaround_distance)
     ) stored,
-	user_name varchar(20),
 	time timestamptz default current_timestamp,
 	start_date date,
 	end_date date,
@@ -90,9 +65,6 @@ CREATE TABLE slicedparts (
     drawing_number VARCHAR(20) REFERENCES product(drawing_number)
 	
 );
-
-
-//slicepoistions table
 
 drop table if exists sliceposition;
 create table sliceposition(
@@ -107,8 +79,6 @@ create table sliceposition(
 	
 )
 
-
-//trigger function to calculate occupied area
 
 
 -- Create a trigger function
@@ -137,4 +107,3 @@ CREATE TRIGGER update_occupied_area_trigger
 AFTER INSERT OR UPDATE OR DELETE ON sliceposition
 FOR EACH ROW
 EXECUTE FUNCTION update_occupied_area();
-
